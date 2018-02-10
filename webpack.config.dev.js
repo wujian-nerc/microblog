@@ -1,17 +1,39 @@
-import webpack from 'webpack';
-import path from 'path';
+var webpack = require('webpack');
+var path = require('path');
 
 module.exports = {
+  devtool: 'cheap-module-eval-source-map',
+
   entry: {
-    index: path.resolve(__dirname, 'index.js'),
-    vendor: ['react', 'react-dom']
+    app: [
+      'babel-polyfill',
+      'webpack-hot-middleware/client',
+      'react-hot-loader/patch',
+      './client/index.js'
+    ],
+    vendor: [
+      'react',
+      'react-dom'
+    ]
   },
+
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: __dirname,
+    filename: 'app.js',
     publicPath: '/',
-    filename: '[name].[hash:8].js'
   },
-  devTool: 'cheap-module-eval-source-map',
+
+  resolve: {
+    alias: {
+      'client': path.resolve(__dirname, '../client'),
+      'components': path.resolve(__dirname, '../client/components'),
+      'containers': path.resolve(__dirname, '../client/containers'),
+      'reducers': path.resolve(__dirname, '../client/reducers'),
+      'sagas': path.resolve(__dirname, '../client/sagas'),
+      'utils': path.resolve(__dirname, '../client/utils'),
+    }
+  },
+
   module: {
     rules: [
       {
@@ -27,9 +49,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: [
-          { loader: 'babel-loader' }
-        ]
+        loader: 'babel-loader'
       },
       {
         test: /\.css$/,
@@ -109,7 +129,7 @@ module.exports = {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         use: [
-          { loader: 'babel' },
+          { loader: 'babel-loader' },
           {
             loader: 'awesome-typescript-loader',
             options: {
@@ -120,22 +140,19 @@ module.exports = {
       }
     ]
   },
+
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      minChunks: function (module) {
-        return module.context && ~module.context.indexOf('node_modules');
+      minChunks: Infinity,
+      filename: 'vendor.js',
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        CLIENT: JSON.stringify(true),
+        'NODE_ENV': JSON.stringify('development'),
       }
-    })
-  ],
-  resolve: {
-    alias: {
-      'client': path.resolve(__dirname, '../client'),
-      'components': path.resolve(__dirname, '../client/components'),
-      'containers': path.resolve(__dirname, '../client/containers'),
-      'reducers': path.resolve(__dirname, '../client/reducers'),
-      'sagas': path.resolve(__dirname, '../client/sagas'),
-      'utils': path.resolve(__dirname, '../client/utils'),
-    }
-  }
+    }),
+  ]
 };

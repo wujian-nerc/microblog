@@ -4,13 +4,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import App from './App';
+import { AppContainer } from 'react-hot-loader';
+import App from './containers/App';
 
 const store = {};
 const mountApp = document.getElementById('root');
 
 ReactDOM.render(
-  <App store={store} />,
+  <AppContainer>
+    <App store={store} />
+  </AppContainer>,
   mountApp
 );
 
