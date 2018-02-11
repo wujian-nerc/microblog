@@ -25,5 +25,5 @@ export default function App (props) {
 }
 
 App.propTypes = {
-  store: PropTypes.object.isRequired
+  // store: PropTypes.object.isRequired
 };
