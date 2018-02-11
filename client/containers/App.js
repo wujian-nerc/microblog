@@ -4,17 +4,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { Router, browserHistory } from 'react-router';
-// import routes from './routes';
+import {
+  Route,
+  Switch
+} from 'react-router-dom';
+import Home from './Home/Home';
+import Archives from './Archives/Archives';
+import About from './About/About';
 
 export default function App (props) {
   return (
-    // <Provider store={props.store}>
-    //   <Router history={browserHistory} />
-    // </Provider>
-
     <div>
-      <h1>Hello, this is a microblog!</h1>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/archives" component={Archives} />
+        <Route exact path="/about" component={About} />
+      </Switch>
     </div>
   );
 }

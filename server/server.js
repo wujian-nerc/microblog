@@ -4,8 +4,11 @@ import path from 'path';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 
-// React
-import { renderToString } from 'react-dom/server';
+// React And React Router
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import { StaticRouter } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 // webpack requirements
 import webpack from 'webpack';
@@ -15,7 +18,7 @@ import webpackConfig from '../webpack.config.dev';
 
 import App from '../client/containers/App';
 import apiRoutes from './routes';
-import renderTemplate from './template';
+import renderTemplate from './render';
 import serverConfig from './config';
 
 const app = new Express();
@@ -45,12 +48,27 @@ app.use('/api', apiRoutes);
 
 // Server Side Rendering
 app.use((req, res, next) => {
-  const html = renderToString(App);
+  const context = {};
+
+  const appWithRouter = (
+    <StaticRouter location={req.url} context={context}>
+      <App />
+    </StaticRouter>
+  );
+
+  if (context.url) {
+    res.redirect(context.url);
+    return;
+  }
+
+  const html = ReactDOMServer.renderToString(appWithRouter);
+
+  const helmet = Helmet.renderStatic();
 
   res
     .set('Content-Type', 'text/html')
     .status(200)
-    .end(renderTemplate(html));
+    .end(renderTemplate(html, helmet));
 });
 
 app.listen(serverConfig.port, function () {
