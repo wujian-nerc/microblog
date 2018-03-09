@@ -8,13 +8,14 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
-import Home from './Home/Home';
-import Archives from './Archives/Archives';
-import About from './About/About';
+import Home from '../Home/Home';
+import Archives from '../Archives/Archives';
+import About from '../About/About';
+import styles from './App.less';
 
 export default function App (props) {
   return (
-    <div>
+    <div className={styles.content}>
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/archives" component={Archives} />

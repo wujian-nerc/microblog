@@ -132,7 +132,7 @@ module.exports = {
         use: [
           { loader: 'babel-loader' },
           {
-            loader: 'awesome-typescript-loader',
+            loader: 'ts-loader',
             options: {
               transpileOnly: true
             }
