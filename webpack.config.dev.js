@@ -38,7 +38,7 @@ module.exports = {
   module: {
     rules: [
       {
-        exclude: [/\.(html|ejs)$/, /\.(js|jsx)$/, /\.(css|less|scss|sass)$/, /\.json$/, /\.svg$/, /\.tsx?$/],
+        exclude: [/\.(html|ejs)$/, /\.(js|jsx)$/, /\.(css|less|scss|sass)$/, /\.json$/, /\.svg$/],
         use: {
           loader: 'url-loader',
           options: {
@@ -124,19 +124,6 @@ module.exports = {
               name: '[name].[ext]'
             }
           },
-        ]
-      },
-      {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: [
-          { loader: 'babel-loader' },
-          {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true
-            }
-          }
         ]
       }
     ]
