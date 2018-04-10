@@ -16,7 +16,7 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from '../webpack.config.dev';
 
-import App from '../client/containers/App';
+import App from '../client/containers/App/App';
 import apiRoutes from './routes';
 import renderTemplate from './render';
 import serverConfig from './config';
