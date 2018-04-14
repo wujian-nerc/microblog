@@ -1,6 +1,9 @@
-import Express from 'express';
+import { Router } from 'express';
+import userRouter from './user.router';
 
-const router = Express.Router();
+const router = new Router();
+
+router.use('/user', userRouter);
 
 router.use('/register', (req, res) => {
   res.json({

@@ -1,13 +1,11 @@
-var webpack = require('webpack');
 var path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
 
   entry: {
     app: [
-      'babel-polyfill',
-      'webpack-hot-middleware/client',
       'react-hot-loader/patch',
       './src/client/index.js'
     ],
@@ -150,5 +148,13 @@ module.exports = {
         NODE_ENV: JSON.stringify('development'),
       }
     })
-  ]
+  ],
+
+  devServer: {
+    hot: true,
+    inline: true,
+    historyApiFallback: true,
+    contentBase: __dirname + '/src/client/',
+    publicPath: '/'
+  }
 };

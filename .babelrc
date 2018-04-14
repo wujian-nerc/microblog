@@ -11,6 +11,10 @@
       ]
     },
     "production": {
+      "presets": [
+        "env",
+        "react"
+      ],
       "plugins": [
         "transform-runtime"
       ]
