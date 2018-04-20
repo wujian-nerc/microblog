@@ -1,5 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var { ReactLoadablePlugin } = require('react-loadable/webpack');
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -21,6 +23,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist/',
     filename: 'app.js',
+    chunkFilename: '[name].chunk.js',
     publicPath: '/',
   },
 
@@ -61,18 +64,20 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: /node_mnodules/,
-        use: [
-          { loader: 'style-loader' },
-          {
-            loader: 'css-loader',
-            options: {
-              module: true,
-              localIdentName: '[local]___[hash:base64:5]',
-              importLoaders: 1
-            }
-          },
-          { loader: 'postcss-loader' }
-        ]
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                module: true,
+                localIdentName: '[local]___[hash:base64:5]',
+                importLoaders: 1
+              }
+            },
+            { loader: 'postcss-loader' }
+          ]
+        })
       },
       {
         test: /\.css$/,
@@ -86,19 +91,21 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: /node_modules/,
-        use: [
-          { loader: 'style-loader' },
-          {
-            loader: 'css-loader',
-            options: {
-              module: true,
-              localIdentName: '[name]-[hash:base64:5]',
-              importLoaders: 1
-            }
-          },
-          { loader: 'postcss-loader' },
-          { loader: 'less-loader' }
-        ]
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                module: true,
+                localIdentName: '[name]-[hash:base64:5]',
+                importLoaders: 1
+              }
+            },
+            { loader: 'postcss-loader' },
+            { loader: 'less-loader' }
+          ]
+        })
       },
       {
         test: /\.less$/,
@@ -136,6 +143,14 @@ module.exports = {
   },
 
   plugins: [
+    new ReactLoadablePlugin({
+      filename: __dirname + '/dist/react-loadable.json'
+    }),
+
+    new ExtractTextPlugin('styles.css', {
+      allChunks: true
+    }),
+
     new webpack.HotModuleReplacementPlugin(),
 
     new webpack.optimize.CommonsChunkPlugin({

@@ -1,17 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Switch, Redirect } from 'react-router-dom';
-import Counter from '../Counter/Counter';
-import About from '../About/About';
+import { renderRoutes } from  'react-router-config';
 
-function Archives ({ match }) {
+function Archives (props) {
   return (
     <div>
       <div>Archives Page?</div>
-      <Switch>
-        <Route path={`${match.url}/counter`} component={Counter} />
-        <Route path={`${match.url}/about`} component={About} />
-      </Switch>
+      {renderRoutes(props.route.routes)}
     </div>
   );
 }

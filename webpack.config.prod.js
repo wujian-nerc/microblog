@@ -144,7 +144,7 @@ module.exports = {
       filename: 'vendor.js',
     }),
 
-    new ExtractTextPlugin('app.[chunkhash].css', { allChunks: true }),
+    new ExtractTextPlugin('styles.[chunkhash].css', { allChunks: true }),
 
     new ManifestPlugin({
       basePath: '/',

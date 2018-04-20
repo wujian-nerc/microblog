@@ -1,3 +1,4 @@
+import reducerRegistry from './reducerRegistry';
 
 // action types
 export const actionTypes = {
@@ -35,7 +36,7 @@ const initialState = {
   counter: 0
 };
 
-export default function counterReducer (state = initialState, action) {
+function reducer (state = initialState, action) {
   switch(action.type) {
     case actionTypes.INCREMENT:
       return {
@@ -56,3 +57,7 @@ export default function counterReducer (state = initialState, action) {
       return state;
   }
 }
+
+// reducerRegistry.register('counter', reducer);
+
+export default reducer;

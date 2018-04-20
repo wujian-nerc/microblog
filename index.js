@@ -5,7 +5,13 @@ if (process.env.NODE_ENV === 'production') {
   require('./dist/server.bundle.js');
 } else {
   require('babel-polyfill');
-  require('babel-register');
+  require('babel-register')({
+    plugins: [
+      'syntax-dynamic-import',
+      'dynamic-import-node',
+      'react-loadable/babel'
+    ]
+  });
 
   // css require hook
   require('css-modules-require-hook')({
