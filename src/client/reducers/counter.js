@@ -58,6 +58,6 @@ function reducer (state = initialState, action) {
   }
 }
 
-// reducerRegistry.register('counter', reducer);
+reducerRegistry.register('counter', reducer);
 
 export default reducer;

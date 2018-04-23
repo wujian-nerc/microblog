@@ -10,7 +10,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
+import { matchRoutes, renderRoutes } from 'react-router-config';
 import Loadable from 'react-loadable';
 import { getBundles } from 'react-loadable/webpack';
 
@@ -63,36 +63,62 @@ function handleRender (req, res, next) {
     return next();
   }
 
-  console.log(req.url);
-
-  const context = {};
-  const modules = [];
-
   const store = configureStore();
   const initialState = store.getState();
 
-  const appWithRouter = (
-    <Provider store={store}>
-      <StaticRouter location={req.url} context={context}>
+  const loadBranchData = () => {
+    const promises = [];
+    // Extract all promises to execute before rendering the app
+    matchRoutes(routes, req.path).forEach(({ route, match }) => {
+      if (route.loadData) {
+        promises.push(route.loadData(customStore, match.params));
+      }
+    });
+
+    // Return promises of promises array to escape the failed condition
+    // If a promise failed other promises will also failed.
+    // So, we are wrapping every promise inside a promise.
+    // Whenever inner promise failed, we can still resolve outer promise
+    // And we can proceed further for the other promises.
+    // Note: If it fails we cannot render the actual html which should be rendered from react
+    return promises.map((promise) => (
+      new Promise((resolve) => {
+        promise.then(resolve).catch(resolve);
+      })
+    ));
+  };
+
+  const render = () => {
+    const context = {};
+    const modules = [];
+
+    const appWithRouter = (
+      <Provider store={store}>
         <Loadable.Capture report={(moduleName) => modules.push(moduleName)}>
-          {renderRoutes(routes)}
+          <StaticRouter location={req.url} context={context}>
+            {renderRoutes(routes)}
+          </StaticRouter>
         </Loadable.Capture>
-      </StaticRouter>
-    </Provider>
-  );
+      </Provider>
+    );
+    const initialView = ReactDOMServer.renderToString(appWithRouter);
 
-  const bundles = getBundles(stats, modules);
+    // convert modules to bundles
+    const bundles = getBundles(stats, modules);
 
-  const initialView = ReactDOMServer.renderToString(appWithRouter);
+    if (context.url) {
+      res.redirect(301, context.url);
+    } else {
+      res
+        .set('Content-Type', 'text/html')
+        .status(200)
+        .end(renderTemplate(initialView, initialState, bundles));
+    }
+  };
 
-  if (context.url) {
-    res.redirect(301, context.url);
-  } else {
-    res
-      .set('Content-Type', 'text/html')
-      .status(200)
-      .end(renderTemplate(initialView, initialState, bundles));
-  }
+  // Resolve all promises before calling the render method.
+  // Call render method even some promises rejected.
+  Promise.all(loadBranchData()).then(render).catch(render);
 }
 
 mongoose.Promise = global.Promise;

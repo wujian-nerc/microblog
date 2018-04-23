@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Loading (props) {
-  console.log('Loading');
-
   if (props.error) {
     return <div>{`${props.error}`}</div>;
   } else if (props.timedOut) {
