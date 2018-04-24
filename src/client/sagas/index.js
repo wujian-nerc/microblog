@@ -1,5 +1,5 @@
 import { all, fork } from 'redux-saga/effects';
-import { incrementAsyncSaga } from './counterSaga';
+import { incrementAsyncSaga } from './counter';
 
 export default function* rootSaga () {
   yield all([

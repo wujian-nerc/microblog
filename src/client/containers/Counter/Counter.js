@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
-import { actions } from '../../reducers/counter';
+import { actions } from '../../actions/counter';
 
 function Counter (props) {
   const {

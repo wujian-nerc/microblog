@@ -1,5 +1,6 @@
 import { call, put, take, takeEvery } from 'redux-saga/effects';
-import { actionTypes } from '../reducers/counter'
+import sagaRegistry from './sagaRegistry';
+import { actionTypes } from '../actions/counter'
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -11,3 +12,5 @@ export function* incrementAsync () {
 export function* incrementAsyncSaga () {
   yield takeEvery(actionTypes.INCREMENT_ASYNC, incrementAsync);
 }
+
+sagaRegistry.register(incrementAsyncSaga);

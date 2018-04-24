@@ -33,8 +33,8 @@ export default function renderTemplate (initialView, initialState, bundles) {
       <script src="${isProdMode ? assetsManifest['/vendor.js'] : '/vendor.js'}"></script>
       <script src="${isProdMode ? assetsManifest['/app.js'] : '/app.js'}"></script>
       ${bundles.map((bundle) => {
-        return `<script src="${isProdMode ? assetsManifest[bundle.file] : `/${bundle.file}`}"></script>`
-      })}
+        return `<script src="${isProdMode ? assetsManifest[bundle.file] : `/${bundle.file}`}"></script>`;
+      }).join('\n')}
     </body>
     </html>
     `

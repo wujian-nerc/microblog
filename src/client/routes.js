@@ -25,9 +25,13 @@ const AsyncCounter = Loadable.Map({
       /* webpackChunkName: "counter" */
       './containers/Counter/Counter'
     ),
-    model: () => import(
-      /* webpackChunkName: "counter-model" */
+    reducer: () => import(
+      /* webpackChunkName: "counter-reducer" */
       './reducers/counter'
+    ),
+    saga: () => import(
+      /* webpackChunkName: "counter-saga" */
+      './sagas/counter'
     )
   },
   loading: Loading,

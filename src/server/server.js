@@ -51,7 +51,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json({ limit: '20mb' }));
 
 // Server Side Rendering
-app.use('*', handleRender);
+app.use(handleRender);
 
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.join(__dirname, '../dist/client')));
@@ -69,7 +69,7 @@ function handleRender (req, res, next) {
   const loadBranchData = () => {
     const promises = [];
     // Extract all promises to execute before rendering the app
-    matchRoutes(routes, req.path).forEach(({ route, match }) => {
+    matchRoutes(routes, req.url).forEach(({ route, match }) => {
       if (route.loadData) {
         promises.push(route.loadData(customStore, match.params));
       }
@@ -92,7 +92,7 @@ function handleRender (req, res, next) {
     const context = {};
     const modules = [];
 
-    const appWithRouter = (
+    const initialView = ReactDOMServer.renderToString(
       <Provider store={store}>
         <Loadable.Capture report={(moduleName) => modules.push(moduleName)}>
           <StaticRouter location={req.url} context={context}>
@@ -101,10 +101,10 @@ function handleRender (req, res, next) {
         </Loadable.Capture>
       </Provider>
     );
-    const initialView = ReactDOMServer.renderToString(appWithRouter);
 
     // convert modules to bundles
     const bundles = getBundles(stats, modules);
+    console.log('modules', req.url, req.path, modules);
 
     if (context.url) {
       res.redirect(301, context.url);
